@@ -1,0 +1,8 @@
+*.img
+*.bin
+*.lst
+*.o
+*.sys
+*.hrb
+hankaku.c
+convHankakuTxt
