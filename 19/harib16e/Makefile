@@ -1,4 +1,4 @@
-OBJS_BOOTPACK = bootpack.o graphic.o dsctbl.o naskfunc.o hankaku.o mysprintf.o myfunction.o int.o fifo.o keyboard.o mouse.o memory.o sheet.c timer.c mtask.c
+OBJS_BOOTPACK = bootpack.o graphic.o dsctbl.o naskfunc.o hankaku.o mysprintf.o myfunction.o int.o fifo.o keyboard.o mouse.o memory.o sheet.o timer.o mtask.o window.o console.o file.o
 
 MAKE = make -r
 DEL = rm -f
@@ -29,12 +29,18 @@ naskfunc.o : naskfunc.nas
 bootpack.hrb : $(OBJS_BOOTPACK) hrb.ld
 	$(CC) $(CFLAGS) -march=i486 -nostdlib -T hrb.ld -g $(OBJS_BOOTPACK) -o $@
 
+hlt.hrb : hlt.nas Makefile
+	nasm $< -o $@ -l hlt.lst
+
 haribote.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > haribote.sys
 
-haribote.img : ipl10.bin haribote.sys Makefile
+# About mtool: https://www.gnu.org/software/mtools/manual/html_node/mformat.html
+# -f: size, -C: hidden_sectors, -B: boot_sector, -i: 
+haribote.img : ipl10.bin haribote.sys hlt.hrb Makefile
 	mformat -f 1440 -C -B ipl10.bin -i haribote.img ::
-	mcopy -i haribote.img haribote.sys ipl10.nas make.bat ::
+	mcopy -i haribote.img haribote.sys ipl10.nas make.bat hlt.hrb ::
+	# mcopy -i haribote.img haribote.sys ::
 
 # Rule
 

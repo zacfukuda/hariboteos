@@ -71,4 +71,9 @@ void HariMain(void) {
 ### harib15f
 **問題**<br>`<string.h>`がincludeできず、`strcmp`が使えない。
 
-**対応**<br>`sprintf`に習い、関数を自作。新たに`myfunction.c`を作成し、同ファイルに関数を記述。新規関数・ファイル追加に伴い`bootpack.h`と`Makefile`に追加記述を施す。`strcmp`のプログラムは[Appleのオープンソースサイト](https://opensource.apple.com/source/Libc/Libc-262/ppc/gen/strcmp.c.auto.html)で公開されている。
+**対応**<br>`sprintf`に倣い、関数を自作。新たに`myfunction.c`を作成し、同ファイルに関数を記述。新規関数・ファイル追加に伴い`bootpack.h`と`Makefile`に追加記述を施す。`strcmp`のプログラムは[Appleのオープンソースサイト](https://opensource.apple.com/source/Libc/Libc-262/ppc/gen/strcmp.c.auto.html)で公開されている。
+
+### harib16b
+**問題**<br>`strncmp`が使えない。
+
+**対応**<br>`strcmp`同様、`myfunction.c`に関数自作。`bootpack.h`に関数定義も追加。参照: [Appleのオープンソースサイト](https://opensource.apple.com/source/Libc/Libc-167/gen.subproj/i386.subproj/strncmp.c.auto.html)。

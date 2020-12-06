@@ -1,4 +1,4 @@
-OBJS_BOOTPACK = bootpack.o graphic.o dsctbl.o naskfunc.o hankaku.o mysprintf.o myfunction.o int.o fifo.o keyboard.o mouse.o memory.o sheet.c timer.c mtask.c
+OBJS_BOOTPACK = bootpack.o graphic.o dsctbl.o naskfunc.o hankaku.o mysprintf.o myfunction.o int.o fifo.o keyboard.o mouse.o memory.o sheet.o timer.o mtask.o window.o console.o file.o
 
 MAKE = make -r
 DEL = rm -f
