@@ -1,5 +1,5 @@
 # 30日でできる!OS自作入門 on macOS
-著書をmacOSにて開発した際のソースコード。
+同書をmacOSにて開発した際のソースコード。
 
 必要ソフトウェアのインストールおよび8日目までの開発は、Qittaに投稿されている[『30日でできる！OS自作入門』を macOS Catalina で実行する](https://qiita.com/noanoa07/items/8828c37c2e286522c7ee)を参照。9日目以降は著者ソースコードを参照。
 
@@ -67,3 +67,8 @@ void HariMain(void) {
 **問題**<br>`task_b_main`内`for(;;)`直下にシートを更新するプログラムが無いと、動作が遅くなる。前項同様の問題。
 
 **対応**<br>前項同様、カウンターを常に表示。この問題も`harib14b`でカウンターを削除した段階で自動解決される。
+
+### harib15f
+**問題**<br>`<string.h>`がincludeできず、`strcmp`が使えない。
+
+**対応**<br>`sprintf`に習い、関数を自作。新たに`myfunction.c`を作成し、同ファイルに関数を記述。新規関数・ファイル追加に伴い`bootpack.h`と`Makefile`に追加記述を施す。`strcmp`のプログラムは[Appleのオープンソースサイト](https://opensource.apple.com/source/Libc/Libc-262/ppc/gen/strcmp.c.auto.html)で公開されている。
