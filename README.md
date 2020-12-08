@@ -77,3 +77,8 @@ void HariMain(void) {
 **問題**<br>`strncmp`が使えない。
 
 **対応**<br>`strcmp`同様、`myfunction.c`に関数自作。`bootpack.h`に関数定義も追加。参照: [Appleのオープンソースサイト](https://opensource.apple.com/source/Libc/Libc-167/gen.subproj/i386.subproj/strncmp.c.auto.html)。
+
+### harib17b~harib17d
+**問題**<br>`asm_cons_putchar`の番地が本記載のものと異なる。
+
+**対応**<br>`Makefile`内`bootpack.hrb`を生成するコマンドに`-Xlinker -Map=bootpack.map`オプションを追加し、マップファイルを生成。`bootpack.map`に記載されている`asm_cons_putchar`の番地を調べ、その値を`hlt.nas`内`be3`値と入れ替える。ちなみに自分が実行した際の番地は、`c64`であった。この値を使用して`harib17c`を実行した際、正常に「A」が表示された。よくわかない場合、`harib17e`までスキップすれば、番地を調べることなく、プログラムを実行できるようになる。
