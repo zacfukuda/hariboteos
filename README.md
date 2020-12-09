@@ -82,3 +82,8 @@ void HariMain(void) {
 **問題**<br>`asm_cons_putchar`の番地が本記載のものと異なる。
 
 **対応**<br>`Makefile`内`bootpack.hrb`を生成するコマンドに`-Xlinker -Map=bootpack.map`オプションを追加し、マップファイルを生成。`bootpack.map`に記載されている`asm_cons_putchar`の番地を調べ、その値を`hlt.nas`内`be3`値と入れ替える。ちなみに自分が実行した際の番地は、`c64`であった。この値を使用して`harib17c`を実行した際、正常に「A」が表示された。よくわかない場合、`harib17e`までスキップすれば、番地を調べることなく、プログラムを実行できるようになる。
+
+### harib18b
+**問題**<br>`a.hrb`と`hello3.hrb`の生成。
+
+**対応**<br>[『30日でできる！OS自作入門』のメモ](https://vanya.jp.net/os/haribote.html#hrb)を参照。「アプリケーション用リンカスクリプト」を`app.ld`として保存し、`a.hrb`、`hello3.hrb`生成時に、これをリンカスクリプトとして利用。リンカスクリプトについては自分も未理解。
