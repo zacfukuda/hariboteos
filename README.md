@@ -87,3 +87,8 @@ void HariMain(void) {
 **問題**<br>`a.hrb`と`hello3.hrb`の生成。
 
 **対応**<br>[『30日でできる！OS自作入門』のメモ](https://vanya.jp.net/os/haribote.html#hrb)を参照。「アプリケーション用リンカスクリプト」を`app.ld`として保存し、`a.hrb`、`hello3.hrb`生成時に、これをリンカスクリプトとして利用。リンカスクリプトについては自分も未理解。
+
+### harib19c
+**問題**<br>`Shift + F1`を押しただけでは強制終了しない。(`0x3d`が入力されない。)
+
+**対応**<br>Macのキーボード設計による問題。`Shift + fn + F1`で強制終了できる。
