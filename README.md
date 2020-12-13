@@ -92,3 +92,8 @@ void HariMain(void) {
 **問題**<br>`Shift + F1`を押しただけでは強制終了しない。(`0x3d`が入力されない。)
 
 **対応**<br>Macのキーボード設計による問題。`Shift + fn + F1`で強制終了できる。
+
+### harib20b
+**問題**<br>`rand()`が使えない。
+
+**対応**<br>`stars.c`内にStack Overflowを参照して`rand()`を実装。結果的に同書と同じ星が配置された。
