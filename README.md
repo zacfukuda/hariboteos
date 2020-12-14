@@ -97,3 +97,20 @@ void HariMain(void) {
 **問題**<br>`rand()`が使えない。
 
 **対応**<br>`stars.c`内にStack Overflowを参照して`rand()`を実装。結果的に同書と同じ星が配置された。
+
+### harib21a
+**問題**<br>`F11`はmacOSにより既にリザーブされている。
+
+**対応**<br>`F11`の代わりに`F11(0x58)`を使用する。
+
+### harib21g
+**問題**<br>`noodle.hrb`生成時、以下のエラーが発生される。
+
+```
+/usr/local/Cellar/i386-elf-gcc/9.2.0/lib/gcc/i386-elf/9.2.0/../../../../i386-elf/bin/ld: section .data VMA [0000000000000400,000000000000040f] overlaps section .text VMA [0000000000000030,000000000000048f]
+collect2: error: ld returned 1 exit status
+make: *** [noodle.hrb] Error 1
+```
+**対応**<br>良くわからないが、`.data`の一部が`.text`の番地に書き込みされようとしているのが原因。`app.ld`を`app2.ld`として複製し、`0x0400`を`0x0500`と書き換えるとコンパイルに成功した。(`.text`の終了番地が`0x48f`のためそれより大きい値を代入。)
+
+なお、この時自身のソースコード`timer.c:72`に不要なコード(`if (t == 0) { break; }`)があることを発見し、この行を削除。この行を削除しないとタイマーのカウントは1秒で止まる。加えてこの行を削除することにより、アプリ実行後task_aのウィンドウに戻るとカーソルが点滅しなくなる不具合も解決された。
