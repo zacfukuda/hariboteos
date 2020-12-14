@@ -1,7 +1,6 @@
 #include "bootpack.h"
 
 void console_task(struct SHEET *sheet, unsigned int memtotal) {
-	struct TIMER *timer;
 	struct TASK *task = task_now();
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
 	int i, fifobuf[128], *fat = (int *) memman_alloc_4k(memman, 4 * 2880);
@@ -14,9 +13,9 @@ void console_task(struct SHEET *sheet, unsigned int memtotal) {
 	*((int *) 0x0fec) = (int) &cons;
 
 	fifo32_init(&task->fifo, 128, fifobuf, task);
-	timer = timer_alloc();
-	timer_init(timer, &task->fifo, 1);
-	timer_settime(timer, 50);
+	cons.timer = timer_alloc();
+	timer_init(cons.timer, &task->fifo, 1);
+	timer_settime(cons.timer, 50);
 	file_readfat(fat, (unsigned char *) (ADR_DISKIMG + 0x000200));
 
 	// Display prompt
@@ -32,13 +31,13 @@ void console_task(struct SHEET *sheet, unsigned int memtotal) {
 			io_sti();
 			if (i <= 1) { // Timer for cursor
 				if (i != 0) {
-					timer_init(timer, &task->fifo, 0);
+					timer_init(cons.timer, &task->fifo, 0);
 					if (cons.cur_c >= 0) { cons.cur_c = COL8_FFFFFF; }
 				} else {
-					timer_init(timer, &task->fifo, 1);
+					timer_init(cons.timer, &task->fifo, 1);
 					if (cons.cur_c >= 0) { cons.cur_c = COL8_000000; }
 				}
-				timer_settime(timer, 50);
+				timer_settime(cons.timer, 50);
 			}
 			if (i == 2) { cons.cur_c = COL8_FFFFFF; } // Cursor ON
 			if (i == 3) { // Cursor OFF
