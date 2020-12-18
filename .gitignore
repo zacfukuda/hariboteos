@@ -5,5 +5,6 @@
 *.sys
 *.hrb
 *.map
+*.out
 hankaku.c
 convHankakuTxt

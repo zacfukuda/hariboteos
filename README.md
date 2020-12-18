@@ -118,3 +118,8 @@ make: *** [noodle.hrb] Error 1
 ### harib22j
 **問題**<br>キーボード入力の条件判定`if (s[0] != 0)`で`Backspace`、`Enter`の入力も`&key_win->task->fifo`へ送信くれるはずだが、うまく送信されない。(`Backspace`および`Enter`が効かない)
 **対応**<br>`harib22h`までの`Backspace`、`Enter`用条件判定を残し、その中で`fifo32_put()`を実行する。
+
+### harib24e
+**問題**<br>著者開発の`obj2bim`が使えないため、無駄なファイルとのリンクを解けない。
+
+**対応**<br>結果的に`harib24d`よりもファイルサイズが大きくなるが、無視して継続。
