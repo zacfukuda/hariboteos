@@ -1,0 +1,64 @@
+APILIBPATH   = ../apilib/
+HARIBOTEPATH = ../haribote/
+
+MAKE = make -r
+DEL = rm -f
+
+CC = i386-elf-gcc
+CFLAGS = -m32 -fno-builtin
+COPTION = -march=i486 -nostdlib
+COSLD = -T hrb.ld
+CAPPLD = -T ../app.ld
+CAPPLD2 = -T ../app2.ld
+CC_WITH_OPTION = i386-elf-gcc -m32 -march=i486 -nostdlib
+
+ifeq ($(APP),noodle)
+	REQUISITES = $(APP).o $(HARIBOTEPATH)mysprintf.o $(APILIBPATH)libapi.a ../app2.ld
+	COMMAND = $(CC_WITH_OPTION) $(CAPPLD2) -o $@ $< $(HARIBOTEPATH)mysprintf.o $(APILIBPATH)libapi.a
+else
+	REQUISITES = $(APP).o $(APILIBPATH)libapi.a ../app.ld
+	COMMAND = $(CC_WITH_OPTION) $(CAPPLD) -o $@ $< $(APILIBPATH)libapi.a
+endif
+
+default :
+	$(MAKE) $(APP).hrb
+
+$(APP).hrb : $(REQUISITES)
+	$(COMMAND)
+
+# Image
+haribote.img : $(HARIBOTEPATH)ipl10.bin $(HARIBOTEPATH)haribote.sys $(APP).hrb
+	mformat -f 1440 -C -B ipl10.bin -i haribote.img ::
+	mcopy -i haribote.img $(HARIBOTEPATH)haribote.sys $(APP).hrb ::
+
+# Rule
+%.o : %.c
+	$(CC) $(CFLAGS) -c $*.c -o $*.o
+
+# -g:generate debug, -f:format, -o:outfile, -l:listfile, elf:ELF32 (i386)
+%.o : %.nas
+	nasm -g -f elf $*.nas -o $*.o
+
+# Commands
+run :
+	$(MAKE) haribote.img
+	qemu-system-i386 -drive file=haribote.img,format=raw,if=floppy -boot a
+
+full :
+	$(MAKE) -C $(APILIBPATH)
+	$(MAKE) $(APP).hrb
+
+run_full :
+	$(MAKE) -C $(APILIBPATH)
+	$(MAKE) -C ../haribote
+	$(MAKE) run
+
+clean :
+	-$(DEL) *.o
+	-$(DEL) *.lst
+	-$(DEL) *.map
+	-$(DEL) haribote.img
+
+src_only :
+	$(MAKE) clean
+	-$(DEL) $(APP).hrb

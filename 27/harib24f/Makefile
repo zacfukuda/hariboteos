@@ -2,8 +2,8 @@ OBJS_BOOTPACK = bootpack.o naskfunc.o hankaku.o graphic.o dsctbl.o mysprintf.o m
 
 OBJS_API = api001.o api002.o api003.o api004.o api005.o api006.o api007.o api008.o api009.o api010.o api011.o api012.o api013.o api014.o api015.o api016.o api017.o api018.o api019.o api020.o
 
-IMG_REQUISITE = ipl10.bin haribote.sys hello.hrb hello2.hrb a.hrb hello3.hrb hello4.hrb hello5.hrb winhelo.hrb winhelo2.hrb winhelo3.hrb star1.hrb stars.hrb stars2.hrb lines.hrb walk.hrb noodle.hrb beepdown.hrb color.hrb color2.hrb crack7.hrb
-IMG_COPY = haribote.sys ipl10.nas make.bat hello.hrb hello2.hrb a.hrb hello3.hrb hello4.hrb hello5.hrb winhelo.hrb winhelo2.hrb winhelo3.hrb star1.hrb stars.hrb stars2.hrb lines.hrb walk.hrb noodle.hrb beepdown.hrb color.hrb color2.hrb crack7.hrb
+IMG_REQUISITE = ipl10.bin haribote.sys a.hrb hello3.hrb hello4.hrb hello5.hrb winhelo.hrb winhelo2.hrb winhelo3.hrb star1.hrb stars.hrb stars2.hrb lines.hrb walk.hrb noodle.hrb beepdown.hrb color.hrb color2.hrb
+IMG_COPY = haribote.sys ipl10.nas make.bat a.hrb hello3.hrb hello4.hrb hello5.hrb winhelo.hrb winhelo2.hrb winhelo3.hrb star1.hrb stars.hrb stars2.hrb lines.hrb walk.hrb noodle.hrb beepdown.hrb color.hrb color2.hrb
 
 MAKE = make -r
 DEL = rm -f
@@ -14,7 +14,11 @@ COPTION = -march=i486 -nostdlib
 COSLD = -T hrb.ld
 CAPPLD = -T app.ld
 CAPPLD2 = -T app2.ld
-CC_WITH_OPTION = $(CC) $(CFLAGS) $(COPTION)
+CC_WITH_OPTION = i386-elf-gcc -m32 -march=i486 -nostdlib
+# -m32: 32-bit environment
+# -fno-builtin: ignore built-in functions that don't begin with __builtin_ as prefix
+# -march=i486: CPU type
+# -nostdlib: Do not use the standard system startup files or libraries when linking.
 
 default : 
 	$(MAKE) img
@@ -40,59 +44,18 @@ haribote.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > haribote.sys
 
 # Applications
+# libapi.a : api001.o api004.o
 libapi.a : $(OBJS_API)
-	ar rcs $@ $^
+	i386-elf-ar rcs $@ $^
 # r: replace files existing inside the archive
 # c: create a archive if not already existent
 # s: create an object-file index into the archive
 
-a.hrb : a.o libapi.a app.ld 
-	$(CC_WITH_OPTION) $(CAPPLD) -L ./ -l api -g a.o -o $@
-
-hello3.hrb : hello3.o $(OBJS_API) app.ld 
-	$(CC_WITH_OPTION) $(CAPPLD) -g hello3.o $(OBJS_API) -o $@
-
-hello4.hrb : hello4.o $(OBJS_API) app.ld 
-	$(CC_WITH_OPTION) $(CAPPLD) -g hello4.o $(OBJS_API) -o $@
-
 hello5.hrb : hello5.o app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g hello5.o -o $@
+	$(CC_WITH_OPTION) $(CAPPLD) -o $@ $<
 
-winhelo.hrb : winhelo.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g winhelo.o $(OBJS_API) -o $@
-
-winhelo2.hrb : winhelo2.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g winhelo2.o $(OBJS_API) -o $@
-
-winhelo3.hrb : winhelo3.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g winhelo3.o $(OBJS_API) -o $@
-
-star1.hrb : star1.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g star1.o $(OBJS_API) -o $@
-
-stars.hrb : stars.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g stars.o $(OBJS_API) -o $@
-
-stars2.hrb : stars2.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g stars2.o $(OBJS_API) -o $@
-
-lines.hrb : lines.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g lines.o $(OBJS_API) -o $@
-
-walk.hrb : walk.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g walk.o $(OBJS_API) -o $@
-
-noodle.hrb : noodle.o $(OBJS_API) mysprintf.o app.ld
-	$(CC_WITH_OPTION) $(CAPPLD2) -g noodle.o $(OBJS_API) mysprintf.o -o $@
-
-beepdown.hrb : beepdown.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g beepdown.o $(OBJS_API) -o $@
-
-color.hrb : color.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD) -g color.o $(OBJS_API) -o $@
-
-color2.hrb : color2.o $(OBJS_API) app.ld
-	$(CC_WITH_OPTION) $(CAPPLD2) -g color2.o $(OBJS_API) -o $@
+noodle.hrb : noodle.o mysprintf.o libapi.a app2.ld
+	$(CC_WITH_OPTION) $(CAPPLD2) -o $@ $< mysprintf.o libapi.a
 
 # Disc Image
 # mtool: https://www.gnu.org/software/mtools/manual/html_node/mformat.html
@@ -107,7 +70,11 @@ haribote.img : $(IMG_REQUISITE) Makefile
 
 # -g:generate debug, -f:format, -o:outfile, -l:listfile, elf:ELF32 (i386)
 %.o : %.nas
-	nasm -g -f elf $*.nas -o $*.o -l $*.lst
+	nasm -g -f elf $*.nas -o $*.o
+
+# Application
+%.hrb : %.o libapi.a app.ld
+	$(CC_WITH_OPTION) $(CAPPLD) -o $@ $< libapi.a
 
 # Commands
 img :
