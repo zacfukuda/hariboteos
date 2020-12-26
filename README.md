@@ -208,3 +208,18 @@ char *buf = alloca(150 * 50);
 **問題**<br>`chklang`実行、本記載のバグ(右半分しか表示されない)が発生しない。
 
 **対応**<br>無視。
+
+### harib26b
+**問題**<br>(1) `memcmp`が使えない。(2) `setjmp.h`が存在しない、`setjmp`、`longjmp`が読み出せない。
+
+**対応**<br>(1)`lib/memcmp.c`を作成。内容は著者ソースファイル`HariboteOS_source/omake/tolsrc/go_0023s/golibc/memcmp.c`を参照。この関数を`libstring.a`としてライブラリー化。`include/string.h`も併せて更新。
+
+(2) `include/setjmp.h`を作成、`typedef int jmp_buf[3];`を記述し、`tek.c`から読み込む。`tek.c`では、`setjmp`、`longjmp`の代わりに`__builtin_setjmp`、`__builtin_longjmp`を使う。
+
+なおアプリ(.hrb)は著者作成のプログラムを使用してのtek圧縮ができないため、アプリは一切圧縮せず開発継続。
+
+### harib26e
+**問題**<br>`sprintf()`で桁数指定(%08d)ができず、(画面表示上での)スコアの上昇がおかしい。
+
+**対応**<br>無視。
+
