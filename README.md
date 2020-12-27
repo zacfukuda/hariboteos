@@ -1,10 +1,9 @@
 # 30日でできる!OS自作入門 on macOS
-同書をmacOSにて開発した際のソースコード。
+同書をmacOSにて開発した際のソースコード。以下は30日目終了時の記念撮影。エミュレータ実行のため、vramに少し異常あり。(基本動作に問題はない)
 
-<figure style="text-align:center;">
+<p align="center">
   <img src="https://raw.githubusercontent.com/zacfukuda/hariboteos/master/screenshot.jpg" alt="30日目の成果" width="480" height="377">
-  <figcaption>30日目終了時。<small style="font-size:12px;">vramに少し異常あり</small></figcaption>  
-</figure>
+</p>
 
 [著者ソースコード(HariboteOS.zip)](https://book.mynavi.jp/files/user/support/4839919844/HariboteOS.zip)
 
