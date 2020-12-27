@@ -1,37 +1,35 @@
 # 30日でできる!OS自作入門 on macOS
 同書をmacOSにて開発した際のソースコード。
 
+[著者ソースコード(HariboteOS.zip)](https://book.mynavi.jp/files/user/support/4839919844/HariboteOS.zip)
+
 必要ソフトウェアのインストールおよび8日目までの開発は、Qittaに投稿されている[『30日でできる！OS自作入門』を macOS Catalina で実行する](https://qiita.com/noanoa07/items/8828c37c2e286522c7ee)を参照。9日目以降は著者ソースコードを参照。
 
-(余程のミスをしない限り)プログラムに問題があっても、コンパイラーが親切にエラーを出力してくれる。Haribote OSが壊れる、開発PCがフリーズするということはない。
+(余程のミスをしない限り)コードに問題があっても、コンパイラが親切にエラーを出力してくれる。Haribote OSが壊れる、開発PCがフリーズするということはない。
 
-### 書籍購入
+## 書籍購入
+- [マイナビ公式ページ](https://book.mynavi.jp/ec/products/detail/id=22078)
 - [アマゾン](https://www.amazon.co.jp/dp/4839919844)
 - [楽天](https://item.rakuten.co.jp/booxstore/bk-4839919844/)
 - [BookLive](https://booklive.jp/product/index/title_id/253146/vol_no/001)(電子書籍)
 
-### 主な参考文献
-- [マイナビ公式ページ](https://book.mynavi.jp/ec/products/detail/id=22078)
-- [著者ソースコード(HariboteOS.zip)](https://book.mynavi.jp/files/user/support/4839919844/HariboteOS.zip)
-- [『30日でできる！OS自作入門』を macOS Catalina で実行する](https://qiita.com/noanoa07/items/8828c37c2e286522c7ee)
-- [@noanoa07氏ソースコード](https://github.com/noanoa07/myHariboteOS)
-
-### 本レポジトリー参照にあたり
-- あくまで私的利用目的、教材提供目的ではない。誰かしらの役に立てばと願っている
+## 本レポジトリー参照にあたり
+- あくまで私的利用目的
 - 2セクション分を1つのプロジェクトとして一括作業している部分あり
 - 該当セクション終了後にミスを発見・訂正している部分あり。該当セクション時点での簡単なOS動作確認上の不具合は確認されなかった。(下記除く)
-- 多くのコメントを割愛。残したコメントは想定外の文字化けを避けるため日本語から英語に
+- 多くのコメントを割愛。残したコメントは想定外の文字化けを避けるため英語
 - コメントは`//`を優先利用
 - 途中で細かな記述方法の変更あり
 
 ## 開発環境
 - PC: MacBook Pro 13-inch 2017
 - OS: macOS Catalina 10.15.7
-- コンパイラー: GCC(i386-elf-gcc) 9.2.0, NASM 2.15.05
+- コンパイラ: GCC(i386-elf-gcc) 9.2.0, NASM 2.15.05
+- イメージ作成: mformat 4.0.25, mcopy 4.0.25
 - エミュレータ: QEMU 5.1.0
-- エディター: Visual Studio Code 1.51 (何でも良いと思うが、UTF-8標準設定のものが無難)
+- エディタ: Visual Studio Code 1.51 (何でも良いと思うが、UTF-8標準設定のものが無難)
 
-Homebrewからソフトウェアをインストールする際、最新のXcodeが必要。最新版Xcodeでは、ターミナルからXcode Command Line Toolのインストールができなくなっており、Apple開発者サイト経由ですることになる。
+Homebrewから各ソフトウェアをインストールする際、最新のXcodeが必要。最新版Xcodeでは、ターミナルからXcode Command Line Toolのインストールができなくなっており、Apple開発者サイト経由ですることになる。
 
 2020年11月時点で既にCatalinaのアップデート`macOS Big Sur 11`が公開されており、加えてアップル独自開発CPU`M1`搭載のPCも流通している。開発を進めている感じ、Big Surでも、(Intel Core ix系搭載のPCであれば、)必要なソフトウェア(GCC, NASM, QEMU, etc.)のインストール・動作ができれば、教材を進められそうである。
 
@@ -133,7 +131,7 @@ make: *** [noodle.hrb] Error 1
 
 **対応**<br>GNUのアーカイブユーティリティ`ar`を使う。Haribote OSでは、macOS標準の`ar`が使用できないため、elf用`i386-elf-ar`(`386-elf-binutils`の一つ)を使う。`harib24e`と比較し、アプリのファイルサイズが大幅に小さくなった。ライブラリを含めてコンパイルした際、GCCが勝手に必要な関数のみを読み込んでくれたと推測している。
 
->> 余談であるが、アプリファイル生成の際、GCC実行時`-fno-builtin`と`-g`のオプションを外しても正常にコンパイルできた。
+> 余談であるが、アプリファイル生成の際、GCC実行時`-fno-builtin`と`-g`のオプションを外しても正常にコンパイルできた。
 
 ### harib24g
 **問題**<br>使用ソフトウェアが(10年以上前の)Windowsでの開発と異なるため、Makefileが記述が異なる。
@@ -216,7 +214,7 @@ char *buf = alloca(150 * 50);
 ### harib26b
 **問題**<br>(1) `memcmp`が使えない。(2) `setjmp.h`が存在しない、`setjmp`、`longjmp`が読み出せない。
 
-**対応**<br>(1)`lib/memcmp.c`を作成。内容は著者ソースファイル`HariboteOS_source/omake/tolsrc/go_0023s/golibc/memcmp.c`を参照。この関数を`libstring.a`としてライブラリ化。`include/string.h`も併せて更新。
+**対応**<br>(1)`lib/memcmp.c`を作成。内容は著者ソースファイル`omake/tolsrc/go_0023s/golibc/memcmp.c`を参照。この関数を`libstring.a`としてライブラリ化。`include/string.h`も併せて更新。
 
 (2) `include/setjmp.h`を作成、`typedef int jmp_buf[3];`を記述し、`tek.c`から読み込む。`tek.c`では、`setjmp`、`longjmp`の代わりに`__builtin_setjmp`、`__builtin_longjmp`を使う。
 
@@ -225,7 +223,7 @@ char *buf = alloca(150 * 50);
 ### harib26e
 **問題**<br>`sprintf()`で桁数指定(%08d)ができず、(画面表示上での)スコアの上昇がおかしい。
 
-**対応**<br>無視。この問題は`harib27e`で`sprintf`の代わりに`setdec8`を作成・使用することにより、自動解決される。
+**対応**<br>無視。この問題は`harib27e`で`setdec8`を導入することにより自動解決される。
 
 ### harib27a
 **問題**<br>(1) `strtol`が使えない。 (2) `|`が入力できない。
@@ -239,7 +237,7 @@ char *buf = alloca(150 * 50);
 
 **対応**<br>`qemu-system-i386`に`-soundhw pcspk`を加えてエミュレートした結果、正常に音がでた。しかし、`warning: '-soundhw pcspk' is deprecated, please set a backend using '-machine pcspk-audiodev=<name>' instead`の警告を受ける。`-machine pcspk-audiodev`に渡すべき`<name>`がわからなかったため、そのまま`-soundhw pcspk`を使用することに。
 
-音楽ファイルは圧縮したものを著者ソースコードより複製している。圧縮前ファイルについては、UTF-8変更したものを保存。
+音楽ファイルは圧縮したものを著者ソースコードより複製。圧縮前ファイルについては、UTF-8変更したものを保存。
 
 ### harib27d
 **問題**<br>`bmp.nasm`を流用できない。(`jpeg.c`はほぼそのままで利用できる。)
@@ -256,3 +254,6 @@ char *buf = alloca(150 * 50);
 ### harib27f
 
 割愛。
+
+## 参考文献
+- [『30日でできる！OS自作入門』を macOS Catalina で実行する](https://qiita.com/noanoa07/items/8828c37c2e286522c7ee)
