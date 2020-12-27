@@ -3,16 +3,18 @@
 
 必要ソフトウェアのインストールおよび8日目までの開発は、Qittaに投稿されている[『30日でできる！OS自作入門』を macOS Catalina で実行する](https://qiita.com/noanoa07/items/8828c37c2e286522c7ee)を参照。9日目以降は著者ソースコードを参照。
 
-基本的にターミナルから利用する実行コマンドは`make run`のみ。プログラムに問題があっても、Haribote OSが壊れる、開発PCがフリーズするということはなく、コンパイラーが親切にエラーを出力してくれる。
+(余程のミスをしない限り)プログラムに問題があっても、コンパイラーが親切にエラーを出力してくれる。Haribote OSが壊れる、開発PCがフリーズするということはない。
 
-2020年11月時点で既にCatalinaのアップデート`macOS Big Sur 11`が公開されており、加えてアップルの独自CPU`M1`搭載のPCも流通している。開発を進めている感じ、Big Surでも、(Intel Core ix系搭載のPCであれば、)必要なソフトウェア(NASM, QEMU, etc.)のインストール・動作ができれば、教材を進められそうである。
+### 書籍購入
+- [アマゾン](https://www.amazon.co.jp/dp/4839919844)
+- [楽天](https://item.rakuten.co.jp/booxstore/bk-4839919844/)
+- [BookLive](https://booklive.jp/product/index/title_id/253146/vol_no/001)(電子書籍)
 
-### 参考文献
+### 主な参考文献
 - [マイナビ公式ページ](https://book.mynavi.jp/ec/products/detail/id=22078)
 - [著者ソースコード(HariboteOS.zip)](https://book.mynavi.jp/files/user/support/4839919844/HariboteOS.zip)
 - [『30日でできる！OS自作入門』を macOS Catalina で実行する](https://qiita.com/noanoa07/items/8828c37c2e286522c7ee)
 - [@noanoa07氏ソースコード](https://github.com/noanoa07/myHariboteOS)
-- [アマゾン購入ページ](https://www.amazon.co.jp/dp/4839919844)
 
 ### 本レポジトリー参照にあたり
 - あくまで私的利用目的、教材提供目的ではない。誰かしらの役に立てばと願っている
@@ -25,23 +27,25 @@
 ## 開発環境
 - PC: MacBook Pro 13-inch 2017
 - OS: macOS Catalina 10.15.7
-- コンパイラー: GCC 12.0.0, NASM 2.15.05
-- エミュレーター: QEMU 5.1.0
+- コンパイラー: GCC(i386-elf-gcc) 9.2.0, NASM 2.15.05
+- エミュレータ: QEMU 5.1.0
 - エディター: Visual Studio Code 1.51 (何でも良いと思うが、UTF-8標準設定のものが無難)
 
-Homebrewからソフトウェアをインストール際、最新のXcodeが必要。最新のXcodeでは、ターミナルからXcode Command Line Toolのインストールができなくなっており、Apple開発者サイト経由ですることになる。
+Homebrewからソフトウェアをインストールする際、最新のXcodeが必要。最新版Xcodeでは、ターミナルからXcode Command Line Toolのインストールができなくなっており、Apple開発者サイト経由ですることになる。
+
+2020年11月時点で既にCatalinaのアップデート`macOS Big Sur 11`が公開されており、加えてアップル独自開発CPU`M1`搭載のPCも流通している。開発を進めている感じ、Big Surでも、(Intel Core ix系搭載のPCであれば、)必要なソフトウェア(GCC, NASM, QEMU, etc.)のインストール・動作ができれば、教材を進められそうである。
 
 ## 不具合・未動作
 
 ### harib06b, harib06c
 **問題**<br>`memory 128MB`と表示される。
 
-**対応**<br>エミュレーターが自動で割り当てるメモリー量だと解釈。プログラム・OS自体に問題はないと判断し、無視して開発を継続。
+**対応**<br>エミュレータが自動で割り当てるメモリー量だと解釈。プログラム・OS自体に問題はないと判断し、無視して開発を継続。
 
 ### harib10c~harib11e
 **問題**<br>`HariMain()`内`for(;;)`直下にシートを更新するプログラムが無いと、動作が遅くなる。PIC/PITもしくはCPUクロック数に原因があると推測される。
 
-**対応**<br>10秒後ではなく、カウンター数を常に表示。動作上の意味は無いが10秒後にカウンター数を表示するプログラムは残してある。なお、この問題は`harib11f`で高速カウンターを消去し、if文内の`io_sti()`を`io_stihlt()`に戻した段階で自然解決される。
+**対応**<br>10秒後ではなく、カウンタ数を常に表示。動作上の意味は無いが10秒後にカウンタ数を表示するプログラムは残してある。尚、この問題は`harib11f`で高速カウンタを消去し、if文内の`io_sti()`を`io_stihlt()`に戻した段階で自然解決される。
 
 ```c
 void HariMain(void) {
@@ -61,12 +65,12 @@ void HariMain(void) {
 ### harib12e~harib13b
 **問題**<br>`task_b_main`内`for(;;)`直下にシートを更新するプログラムが無いと、動作が遅くなる。harib10c~harib11eと類似した問題。
 
-**対応**<br>前回同様、カウンターを常に表示。(`if (fifo32_status(&fifo) == 0)`)内の`io_sti()`を`io_stihlt()`としてもスムーズな動作はするが、前者と比べてカウントスピードは約1/50になる。
+**対応**<br>前回同様、カウンタを常に表示。(`if (fifo32_status(&fifo) == 0)`)内の`io_sti()`を`io_stihlt()`としてもスムーズな動作はするが、前者と比べてカウントスピードは約1/50になる。
 
 ### harib13c~harib13g
 **問題**<br>`task_b_main`内`for(;;)`直下にシートを更新するプログラムが無いと、動作が遅くなる。前項同様の問題。
 
-**対応**<br>前項同様、カウンターを常に表示。この問題も`harib14b`でカウンターを削除した段階で自動解決される。
+**対応**<br>前項同様、カウンタを常に表示。この問題も`harib14b`でカウンタを削除した段階で自動解決される。
 
 ### harib15f
 **問題**<br>`<string.h>`がincludeできず、`strcmp`が使えない。
@@ -113,7 +117,7 @@ make: *** [noodle.hrb] Error 1
 ```
 **対応**<br>良くわからないが、`.data`の一部が`.text`の番地に書き込みされようとしているのが原因。`app.ld`を`app2.ld`として複製し、`0x0400`を`0x0500`と書き換えるとコンパイルに成功した。(`.text`の終了番地が`0x48f`のためそれより大きい値を代入。)
 
-なお、この時自身のソースコード`timer.c:72`に不要なコード(`if (t == 0) { break; }`)があることを発見し、この行を削除。この行を削除しないとタイマーのカウントは1秒で止まる。加えてこの行を削除することにより、アプリ実行後task_aのウィンドウに戻るとカーソルが点滅しなくなる不具合も解決された。
+尚、この時自身のソースコード`timer.c:72`に不要なコード(`if (t == 0) { break; }`)があることを発見し、この行を削除。この行を削除しないとタイマーのカウントは1秒で止まる。加えてこの行を削除することにより、アプリ実行後task_aのウィンドウに戻るとカーソルが点滅しなくなる不具合も解決された。
 
 ### harib22j
 **問題**<br>キーボード入力の条件判定`if (s[0] != 0)`で`Backspace`、`Enter`の入力も`&key_win->task->fifo`へ送信くれるはずだが、うまく送信されない。(`Backspace`および`Enter`が効かない)
@@ -125,21 +129,21 @@ make: *** [noodle.hrb] Error 1
 **対応**<br>結果的に`harib24d`よりもファイルサイズが大きくなるが、無視して継続。
 
 ### harib24f
-**問題**<br>著者開発のライブラリアン`golib00`が使えないため、ライブラリーを作れない。
+**問題**<br>著者開発のライブラリアン`golib00`が使えないため、ライブラリを作れない。
 
-**対応**<br>GNUのアーカイブユーティリティ`ar`を使う。Haribote OSでは、macOS標準の`ar`が使用できないため、elf用`i386-elf-ar`(`386-elf-binutils`の一つ)を使う。`harib24e`と比較し、アプリのファイルサイズが大幅に小さくなった。ライブラリーを含めてコンパイルした際、GCCが勝手に必要な関数のみを読み込んでくれたと推測している。
+**対応**<br>GNUのアーカイブユーティリティ`ar`を使う。Haribote OSでは、macOS標準の`ar`が使用できないため、elf用`i386-elf-ar`(`386-elf-binutils`の一つ)を使う。`harib24e`と比較し、アプリのファイルサイズが大幅に小さくなった。ライブラリを含めてコンパイルした際、GCCが勝手に必要な関数のみを読み込んでくれたと推測している。
 
 >> 余談であるが、アプリファイル生成の際、GCC実行時`-fno-builtin`と`-g`のオプションを外しても正常にコンパイルできた。
 
 ### harib24g
 **問題**<br>使用ソフトウェアが(10年以上前の)Windowsでの開発と異なるため、Makefileが記述が異なる。
 
-**対応**<br>詳しくは該当ディレクトリーの各Makefileを参照。
+**対応**<br>詳しくは該当ディレクトリの各Makefileを参照。
 
 ### harib25a
 **問題**<br>`haribote/mysprintf`はアプリ(`noodle.hrb`, `sosu.hrb`, etc.)でも使われる。
 
-**対応**<br>27日目の学習でライブラリーに詳しくなったため、`sprintf`, `strcmp`, `strncmp`をライブラリーとして書き出す。新規作成、修正したファイルは以下の通り。必要なくなったファイルは削除している。
+**対応**<br>27日目の学習でライブラリに詳しくなったため、`sprintf`, `strcmp`, `strncmp`をライブラリとして書き出す。新規作成、修正したファイルは以下の通り。必要なくなったファイルは削除している。
 
 ```bash
 # 新規
@@ -212,7 +216,7 @@ char *buf = alloca(150 * 50);
 ### harib26b
 **問題**<br>(1) `memcmp`が使えない。(2) `setjmp.h`が存在しない、`setjmp`、`longjmp`が読み出せない。
 
-**対応**<br>(1)`lib/memcmp.c`を作成。内容は著者ソースファイル`HariboteOS_source/omake/tolsrc/go_0023s/golibc/memcmp.c`を参照。この関数を`libstring.a`としてライブラリー化。`include/string.h`も併せて更新。
+**対応**<br>(1)`lib/memcmp.c`を作成。内容は著者ソースファイル`HariboteOS_source/omake/tolsrc/go_0023s/golibc/memcmp.c`を参照。この関数を`libstring.a`としてライブラリ化。`include/string.h`も併せて更新。
 
 (2) `include/setjmp.h`を作成、`typedef int jmp_buf[3];`を記述し、`tek.c`から読み込む。`tek.c`では、`setjmp`、`longjmp`の代わりに`__builtin_setjmp`、`__builtin_longjmp`を使う。
 
@@ -221,5 +225,34 @@ char *buf = alloca(150 * 50);
 ### harib26e
 **問題**<br>`sprintf()`で桁数指定(%08d)ができず、(画面表示上での)スコアの上昇がおかしい。
 
-**対応**<br>無視。
+**対応**<br>無視。この問題は`harib27e`で`sprintf`の代わりに`setdec8`を作成・使用することにより、自動解決される。
 
+### harib27a
+**問題**<br>(1) `strtol`が使えない。 (2) `|`が入力できない。
+
+**対応**<br>(1) 著者ソースコード(`omake/tolsrc/go_0023s/golibc/strtol.c`)を参照し、`strtol.c`、`strtoul0.c`を作成。`libstdlib.a`として書き出し、コンパイル時にアプリとリンク。`strtol`に必要な`errno.h`、`limits.h`も併せて作成。
+
+(2) 無視。
+
+### harib27c
+**問題**<br>音がならない。
+
+**対応**<br>`qemu-system-i386`に`-soundhw pcspk`を加えてエミュレートした結果、正常に音がでた。しかし、`warning: '-soundhw pcspk' is deprecated, please set a backend using '-machine pcspk-audiodev=<name>' instead`の警告を受ける。`-machine pcspk-audiodev`に渡すべき`<name>`がわからなかったため、そのまま`-soundhw pcspk`を使用することに。
+
+音楽ファイルは圧縮したものを著者ソースコードより複製している。圧縮前ファイルについては、UTF-8変更したものを保存。
+
+### harib27d
+**問題**<br>`bmp.nasm`を流用できない。(`jpeg.c`はほぼそのままで利用できる。)
+
+**対応**<br>`bmp.nasm`を適当なディレクトリへ複製。ファイル内の文字化け部分を全削除。最初の方に文字化けを含む`%if 0…%endif`ブロックも削除。`iconv -f US-ASCII -t UTF-8 bmp.nasm > bmp.nas`を実行してUTF-8形式に変換し、`gview`下へ移動。`[BITS 32]`、関数接頭字`_`を削除。`.bpp4`内の`.do4.1`ラベル宣言でコロンが抜けているので`.do4.1:`と修正。
+
+`jpeg.c`はUTF-8形式としてファイルをした後、著者ソースコードをコピー&ペースト。文字化けは鬱陶しいので、その部分は削除。コンパイル時`jpeg_decode_yuv`が`int`を返さないと警告を受けるので、同関数の`return;`をコメントアウト。
+
+### harib27e
+**問題**<br>シリンダ読み込み数。
+
+**対応**<br>各バイナリファイルは、本記載のものよりサイズが大きくなる傾向にあり、且アプリの圧縮も行えない。`setdec8`導入後、バイナリエディタ(Hex Fiend)を使ってharibote.imgの中身が何バイトまで使用されているか調べると`0x02BAA0`であった。結果、シリンダ数: `0x02BAA0 / 18432 = 178848 / 18432 = 9`、余り: `0x02BAA0 % 18432 = 178848 % 18432 = 12960(13k)`となる。圧縮なしで13kを節約するのは無理と判断。10シリンダを読み込む形で`ipl9.nas => ipl10.nas`とした。
+
+### harib27f
+
+割愛。
