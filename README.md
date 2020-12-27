@@ -1,5 +1,5 @@
 # 30日でできる!OS自作入門 on macOS
-同書をmacOSにて開発した際のソースコード。以下は30日目終了時の記念撮影。エミュレータ実行のため、vramに少し異常あり。(基本動作に問題はない)
+同書をmacOSにて開発した際のソースコード。<br>以下は30日目終了時の記念撮影。エミュレータ実行のため、vram(シート)に少し異常あり。(基本動作に問題はない)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/zacfukuda/hariboteos/master/screenshot.jpg" alt="30日目の成果" width="480" height="377">
@@ -35,7 +35,7 @@
 
 Homebrewから各ソフトウェアをインストールする際、最新のXcodeが必要。最新版Xcodeでは、ターミナルからXcode Command Line Toolのインストールができなくなっており、Apple開発者サイト経由ですることになる。
 
-2020年11月時点で既にCatalinaのアップデート`macOS Big Sur 11`が公開されており、加えてアップル独自開発CPU`M1`搭載のPCも流通している。開発を進めている感じ、Big Surでも、(Intel Core ix系搭載のPCであれば、)必要なソフトウェア(GCC, NASM, QEMU, etc.)のインストール・動作ができれば、教材を進められそうである。
+2020年11月時点で既にCatalinaのアップデート`macOS Big Sur 11`が公開されており、加えてアップル独自開発CPU`M1`搭載のPCも流通している。Big Surでも、(Intel Core ix系搭載のPCであれば、)必要なソフトウェア(GCC, NASM, QEMU, etc.)のインストール・動作ができれば、開発を進められそうである。
 
 ## 不具合・未動作
 
@@ -254,10 +254,6 @@ char *buf = alloca(150 * 50);
 **問題**<br>シリンダ読み込み数。
 
 **対応**<br>各バイナリファイルは、本記載のものよりサイズが大きくなる傾向にあり、且アプリの圧縮も行えない。`setdec8`導入後、バイナリエディタ(Hex Fiend)を使ってharibote.imgの中身が何バイトまで使用されているか調べると`0x02BAA0`であった。結果、シリンダ数: `0x02BAA0 / 18432 = 178848 / 18432 = 9`、余り: `0x02BAA0 % 18432 = 178848 % 18432 = 12960(13k)`となる。圧縮なしで13kを節約するのは無理と判断。10シリンダを読み込む形で`ipl9.nas => ipl10.nas`とした。
-
-### harib27f
-
-割愛。
 
 ## 参考文献
 - [『30日でできる！OS自作入門』を macOS Catalina で実行する](https://qiita.com/noanoa07/items/8828c37c2e286522c7ee)
