@@ -1,5 +1,5 @@
 # 30日でできる!OS自作入門 on macOS
-同書をmacOSにて開発した際のソースコード。<br>以下は30日目終了時の記念撮影。エミュレータ実行のため、vram(シート)に少し異常あり。(基本動作に問題はない)
+同書をmacOSにて開発した際のソースコード。<br>下のイメージはは30日目終了時の記念撮影。エミュレータ実行のため、vram(シート)に少し異常あり。(基本動作に問題はない)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/zacfukuda/hariboteos/master/screenshot.jpg" alt="30日目の成果" width="480" height="377">
