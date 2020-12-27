@@ -1,9 +1,14 @@
 # 30日でできる!OS自作入門 on macOS
 同書をmacOSにて開発した際のソースコード。
 
+<figure style="text-align:center;">
+  <img src="https://raw.githubusercontent.com/zacfukuda/hariboteos/master/screenshot.jpg" alt="30日目の成果" width="480" height="377">
+  <figcaption>30日目終了時。<small style="font-size:12px;">vramに少し異常あり</small></figcaption>  
+</figure>
+
 [著者ソースコード(HariboteOS.zip)](https://book.mynavi.jp/files/user/support/4839919844/HariboteOS.zip)
 
-必要ソフトウェアのインストールおよび8日目までの開発は、Qittaに投稿されている[『30日でできる！OS自作入門』を macOS Catalina で実行する](https://qiita.com/noanoa07/items/8828c37c2e286522c7ee)を参照。9日目以降は著者ソースコードを参照。
+8日目までの開発は、Qittaに投稿されている[『30日でできる！OS自作入門』を macOS Catalina で実行する](https://qiita.com/noanoa07/items/8828c37c2e286522c7ee)を参照。9日目以降は著者ソースコードを参照。
 
 (余程のミスをしない限り)コードに問題があっても、コンパイラが親切にエラーを出力してくれる。Haribote OSが壊れる、開発PCがフリーズするということはない。
 
